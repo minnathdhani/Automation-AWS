@@ -1,4 +1,4 @@
-# 🚀 Automated EC2 Instance Management using AWS Lambda and Boto3
+# 🚀 1. Automated EC2 Instance Management using AWS Lambda and Boto3
 
 ## 📘 Overview
 
@@ -136,6 +136,165 @@ To test the Lambda function manually:
 
 
 -----
+
+# 🧹 2. Automated S3 Bucket Cleanup Using AWS Lambda and Boto3
+
+## 📌 Objective
+
+Automate the deletion of files older than 30 days in an S3 bucket using AWS Lambda and Boto3.  
+Since we cannot backdate S3 object timestamps directly, this project uses **filename-based date logic** for testing.
+
+---
+
+## 🧱 Components Used
+
+- AWS S3
+- AWS Lambda (Python 3.x)
+- AWS IAM (Role and Policy)
+- AWS CloudWatch (for logs)
+- Boto3 (Python SDK for AWS)
+
+---
+
+## 🛠️ Setup Instructions
+
+### 1. 🚀 Create an S3 Bucket
+
+1. Go to the AWS Console → **S3**
+2. Click **Create bucket**
+3. Name it something like: `s3-lambda-cleanup-demo`
+4. Keep default settings or customize as needed
+5. Upload the following sample files with **date in filename**:
+
+report_2024-04-01.txt <-- simulate OLD
+report_2025-04-13.txt <-- simulate OLD
+report_2025-06-15.txt <-- recent
+
+>>> ⚠️ Note: AWS doesn’t allow backdating `LastModified`. Instead, we use the filename to simulate age.
+
+<img width="949" alt="image" src="https://github.com/user-attachments/assets/5a2c13d1-c8a6-413d-9d4b-2bb506ee666d" /><br>
+
+
+---
+
+### 2. 🛡️ Create IAM Role for Lambda
+
+1. Go to AWS Console → **IAM** → Roles → **Create role**
+2. **Trusted entity**: Select `Lambda`
+3. **Permissions**: Attach policy `AmazonS3FullAccess`
+4. Click **Next** → Add a role name: `LambdaS3CleanupRole`
+5. Click **Create Role**
+
+<img width="944" alt="image" src="https://github.com/user-attachments/assets/2c00af0b-4f6d-45be-8a2b-0ada59faff11" /><br>
+
+
+---
+
+### 3. 🧠 Create Lambda Function
+
+1. Go to AWS Console → **Lambda**
+2. Click **Create function**
+3. Set:
+- Name: `S3CleanupFunction`
+- Runtime: `Python 3.12` (or latest)
+- Permissions: Use **existing role** `LambdaS3CleanupRole`
+4. Click **Create function**
+
+<img width="944" alt="image" src="https://github.com/user-attachments/assets/5334450a-c091-41b4-85bd-b2f6c6ad9cb1" /><br>
+
+
+---
+
+### 4. 🧾 Lambda Code (Filename-based Cleanup)
+
+Replace default code with the following:
+
+```python
+import boto3
+import datetime
+import re
+import os
+
+s3 = boto3.client('s3')
+
+# Customize bucket name and days threshold
+BUCKET_NAME = 's3-lambda-cleanup-demo'
+DAYS_THRESHOLD = 30
+
+def extract_date_from_filename(filename):
+ """Extract YYYY-MM-DD from the filename using regex"""
+ match = re.search(r'(\d{4})-(\d{2})-(\d{2})', filename)
+ if match:
+     try:
+         return datetime.datetime.strptime(match.group(), '%Y-%m-%d').date()
+     except ValueError:
+         return None
+ return None
+
+def lambda_handler(event, context):
+ try:
+     response = s3.list_objects_v2(Bucket=BUCKET_NAME)
+     if 'Contents' not in response:
+         print("Bucket is empty.")
+         return
+
+     today = datetime.date.today()
+     deleted_files = []
+
+     for obj in response['Contents']:
+         key = obj['Key']
+         file_date = extract_date_from_filename(key)
+
+         if not file_date:
+             print(f"Skipping file without valid date: {key}")
+             continue
+
+         age = (today - file_date).days
+
+         if age > DAYS_THRESHOLD:
+             print(f"Deleting old file: {key} (Age: {age} days)")
+             s3.delete_object(Bucket=BUCKET_NAME, Key=key)
+             deleted_files.append(key)
+         else:
+             print(f"Keeping file: {key} (Age: {age} days)")
+
+     print(f"✅ Deleted {len(deleted_files)} file(s): {deleted_files}")
+
+ except Exception as e:
+     print(f"❌ Error: {str(e)}")
+```
+
+### 5. 🧪 Test the Function
+
+From Lambda Console → Click Test
+Create a test event (can leave it empty)
+Click Test
+
+![Screenshot (22)](https://github.com/user-attachments/assets/26c2f6d3-8e4a-4e7c-a7bd-d0191f258ba4)<br>
+
+
+----
+
+ ### Cleanup
+Delete the Lambda function (optional)
+Delete the IAM role (optional)
+Delete the S3 bucket if no longer needed\
+
+---
+
+### 📎 Notes
+In real-world usage, rely on LastModified from S3 metadata instead of filenames.
+For secure implementation, use least privilege IAM policy rather than AmazonS3FullAccess.
+
+---
+
+### 📚 References
+Boto3 S3 Docs
+AWS Lambda Docs
+IAM Best Practices
+
+
+
 
 # 📦 4.Automated EBS Snapshot Creation and Cleanup using AWS Lambda & Boto3
 
