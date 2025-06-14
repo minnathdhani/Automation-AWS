@@ -30,6 +30,7 @@ To create an AWS Lambda function that:
    
 ![Screenshot 2025-06-14 060915](https://github.com/user-attachments/assets/e8a88cca-605f-4810-a0f6-7c14c54c215d)<br>
 
+---
 
 ### 2. IAM Role for Lambda
 
@@ -53,7 +54,7 @@ To create an AWS Lambda function that:
 ![Screenshot (9)](https://github.com/user-attachments/assets/5b04bfaf-3864-4e9a-ac48-73484b5d54c5)<br>
 ![Screenshot 2025-06-14 061011](https://github.com/user-attachments/assets/e442a7db-9912-4fe9-9974-aa8f90452ba1)<br>
 
-
+---
 
 ### Lambda Code:
 
@@ -104,7 +105,7 @@ def lambda_handler(event, context):
 
 ```
 
-
+---
 
 ## 🔬 Testing
 
@@ -119,6 +120,7 @@ To test the Lambda function manually:
 - Instances tagged with Minnath-Auto-Stop should be stopped.
 - Instances tagged with Minnath-Auto-Start should be started.
 
+---
 
 ## Screenshorts:
 
@@ -264,6 +266,8 @@ def lambda_handler(event, context):
      print(f"❌ Error: {str(e)}")
 ```
 
+---
+
 ### 5. 🧪 Test the Function
 
 From Lambda Console → Click Test
@@ -294,6 +298,7 @@ AWS Lambda Docs
 IAM Best Practices
 
 
+---
 
 
 # 📦 4.Automated EBS Snapshot Creation and Cleanup using AWS Lambda & Boto3
@@ -412,12 +417,12 @@ def lambda_handler(event, context):
     }
 
 ```
-
+-----
 4. Click Deploy.
 
    ![Screenshot (14)](https://github.com/user-attachments/assets/343c7039-1dd7-4d32-ab7f-b9b942012411)<br>
 
-   
+
 ---
 
 ### 5. Test the Lambda Function:
@@ -442,7 +447,7 @@ Check the Tags tab → You should see CreatedBy: LambdaBackup
 ![Screenshot (20)](https://github.com/user-attachments/assets/c149b6ca-dfe1-45d8-b7ef-0bbff1bc35c0)<br>
 
 
-
+------
 
 
 
