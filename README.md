@@ -59,3 +59,39 @@ To test the Lambda function manually:
 - Instances tagged with Minnath-Auto-Stop should be stopped.
 - Instances tagged with Minnath-Auto-Start should be started.
 
+Screenshorts:
+1.
+
+![Screenshot 2025-06-14 060915](https://github.com/user-attachments/assets/e8a88cca-605f-4810-a0f6-7c14c54c215d)<br>
+
+
+2.
+
+![Screenshot (9)](https://github.com/user-attachments/assets/5b04bfaf-3864-4e9a-ac48-73484b5d54c5)<br>
+![Screenshot 2025-06-14 061011](https://github.com/user-attachments/assets/e442a7db-9912-4fe9-9974-aa8f90452ba1)<br>
+
+
+3.
+
+
+4.
+
+![Screenshot 2025-06-14 061059](https://github.com/user-attachments/assets/93c80206-4a03-400d-8e22-9b3360fe2c63)<br>
+![Screenshot 2025-06-14 061213](https://github.com/user-attachments/assets/845e85b1-afc0-4956-84b6-8f3f0f0579e1)<br>
+
+
+
+
+5.
+Before:
+![Screenshot (11)](https://github.com/user-attachments/assets/96c22dba-defe-4d0f-9e1d-a6d76f43191b)<br>
+After:
+![Screenshot 2025-06-14 061316](https://github.com/user-attachments/assets/44c0c57e-4685-4612-9b95-ec6650525478)<br>
+![Screenshot (12)](https://github.com/user-attachments/assets/48bbdb68-e81a-4594-9de6-7322fdbebb9c)<br>
+
+
+
+
+
+
+
