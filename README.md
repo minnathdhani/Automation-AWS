@@ -449,6 +449,158 @@ Check the Tags tab → You should see CreatedBy: LambdaBackup
 
 ------
 
+# 🏷️ EC2 Auto-Tagging via AWS Lambda & EventBridge
+
+This project implements an **automated EC2 instance tagging solution** using AWS Lambda and EventBridge. Whenever a new EC2 instance changes to the `running` state, this system applies predefined tags such as `LaunchDate` and `Environment` to the instance automatically.
+
+---
+
+## 📌 Objective
+
+To streamline infrastructure management by:
+- Automatically tagging EC2 instances upon launch.
+- Reducing manual effort and ensuring consistent metadata across resources.
+
+---
+
+## 🚀 Architecture Overview
+
+1. **Event Source**:  
+   AWS EventBridge listens for EC2 state change events.
+
+2. **Trigger Condition**:  
+   When an EC2 instance transitions to the `running` state, EventBridge triggers a Lambda function.
+
+3. **Lambda Function**:  
+   - Extracts the `instance-id` from the event.
+   - Applies two tags to the instance:
+     - `LaunchDate`: Current UTC date
+     - `Environment`: `Auto-Tagged`
+
+---
+
+## 🧠 How It Works
+
+### Example EventBridge Event (Trigger Payload)
+```json
+{
+  "detail-type": "EC2 Instance State-change Notification",
+  "source": "aws.ec2",
+  "detail": {
+    "instance-id": "i-0987792ea6f440667",
+    "state": "running"
+  }
+}
+```
+
+### Lambda Function Behavior
+- Validates the presence of `detail` and `instance-id`.
+- Tags the instance using `boto3` EC2 client.
+- Handles errors gracefully and logs complete event data for debugging.
+
+---
+
+## 🧾 Prerequisites
+
+- AWS account with permissions to:
+  - Create/manage Lambda functions
+  - Read EC2 events
+  - Tag EC2 resources
+- IAM Role for Lambda with the following policy permissions:
+  - `ec2:CreateTags`
+  - `logs:*`
+- Python 3.9+ runtime (used in Lambda)
+
+---
+
+## 📂 Project Structure
+
+```
+ec2-auto-tagging/
+├── lambda_function.py      # Main Lambda code
+├── README.md               # Documentation
+```
+
+---
+
+## 🛠️ Deployment Steps
+
+### Step 1: Create the Lambda Function
+
+1. Go to AWS Lambda console.
+2. Create a new Lambda function with:
+   - Runtime: Python 3.9 or later
+   - Execution Role: With EC2 tag permissions
+3. Paste the code from `lambda_function.py`.
+
+   
+    ### EC2 Instance pic
+   <img width="947" alt="image" src="https://github.com/user-attachments/assets/ef9935aa-a491-4ce4-98d0-0cd342466015" /><br>
+    ### IAM Roles for Auto-tagging
+    <img width="947" alt="image" src="https://github.com/user-attachments/assets/4622524d-2a8d-45cc-981c-44e27c42b5a8" /><br>
+    ### Creation of Lambda Function
+   <img width="949" alt="image" src="https://github.com/user-attachments/assets/efb683fd-cc58-4c50-8663-3fa7f51919b6" /><br>
+   
+---
+   
+### Step 2: Configure EventBridge Rule
+
+1. Navigate to **Amazon EventBridge > Rules > Create Rule**
+2. Define a name like `TagEC2OnLaunch`
+3. Event pattern:
+   ```json
+   {
+     "source": ["aws.ec2"],
+     "detail-type": ["EC2 Instance State-change Notification"],
+     "detail": {
+       "state": ["running"]
+     }
+   }
+   ```
+4. Set target as the Lambda function.
+
+### EventBridge Rule
+<img width="945" alt="image" src="https://github.com/user-attachments/assets/1c8bb5de-adef-4593-91b1-53fcb367801c" /><br>
+
+
+---
+
+## ✅ Expected Output
+
+Once configured, whenever a new EC2 instance enters the `running` state, your Lambda function will:
+
+- Automatically tag the instance with the launch date and environment.
+- Log tagging confirmation in CloudWatch.
+
+Example:
+```
+✅ Tagged EC2 instance i-0987792ea6f440667 with: [{'Key': 'LaunchDate', 'Value': '2025-06-15'}, {'Key': 'Environment', 'Value': 'Auto-Tagged'}]
+```
+
+### Final Output pic
+![Screenshot (23)](https://github.com/user-attachments/assets/b434370f-3e54-43d7-8317-d02a68ec570c)<br>
+
+
+---
+
+## 🧪 Testing
+
+You can test this by:
+- Manually launching a new EC2 instance.
+- Or using the Lambda test console with a sample event payload.
+
+---
+
+## 📎 Notes
+
+- This solution is extensible to include additional tags or trigger conditions.
+- Be sure to monitor CloudWatch Logs for any unexpected errors.
+
+---
+
+## 📧 Contact
+
+For any questions or improvements, feel free to reach out or contribute to the project.
 
 
 
